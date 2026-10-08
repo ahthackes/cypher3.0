@@ -1,0 +1,62 @@
+# Cypher 2.0 — Windows configuration.
+# Use with:  cypher --config config\cypher.windows.toml start
+# Same codebase as Linux; only the log source, firewall backend, and
+# paths differ. Run PowerShell / the services below *as Administrator*.
+
+[general]
+mode = "dry_run"          # "dry_run" or "active" — leave dry_run until you've reviewed alerts
+data_dir = "./data"
+timezone = "local"
+
+[sources]
+# Linux text-log sources are disabled on Windows (empty string = off).
+auth_log = ""
+syslog = ""
+# If you run IIS, point this at its W3C log instead — note: the current
+# web parser reads nginx/Apache "combined" format, not IIS W3C format.
+web_access_log = ""
+# Event Log channel to read (needs Administrator or "Event Log Readers").
+windows_security_log = "Security"
+
+[storage]
+sqlite_path = "./data/cypher.db"
+parquet_dir = "./data/processed"
+
+[detect]
+rules_dir = "./config/rules.d"
+window_seconds = 60
+score_weight_rules = 0.5
+score_weight_ml = 0.5
+
+[detect.thresholds]
+low = 30
+medium = 60
+high = 80
+critical = 95
+
+[ml]
+model_dir = "./data/models"
+isolation_forest_contamination = 0.02
+autoencoder_enabled = false
+retrain_interval_hours = 24
+
+[respond]
+enabled = true
+backend = "windows_firewall"
+block_ttl_seconds = 3600
+max_blocks_per_hour = 20
+allowlist_file = "./config/allowlist.toml"
+ipc_host = "127.0.0.1"
+ipc_port = 8765
+ipc_token_file = "./data/responder.token"
+
+[api]
+host = "127.0.0.1"
+port = 8000
+session_secret_env = "CYPHER_SESSION_SECRET"
+
+[geo]
+geolite_db = "./data/geo/GeoLite2-City.mmdb"
+
+[mitre]
+attack_json = "./data/mitre/enterprise-attack.json"

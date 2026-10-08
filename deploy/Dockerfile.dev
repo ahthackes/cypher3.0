@@ -1,0 +1,13 @@
+# Development container — NOT for production active-defense use, since
+# the responder needs real host-level CAP_NET_ADMIN and access to real
+# system log files that don't meaningfully exist inside a container.
+# Useful for running the API + dashboard against a replayed demo dataset.
+FROM python:3.11-slim
+WORKDIR /app
+COPY pyproject.toml .
+COPY src/ src/
+COPY config/ config/
+COPY web/ web/
+RUN pip install -e .
+EXPOSE 8000
+CMD ["uvicorn", "cypher.api.app:create_app", "--factory", "--host", "0.0.0.0", "--port", "8000"]

@@ -1,0 +1,26 @@
+[[rule]]
+id = "web_401_burst"
+description = "10 or more 401/403 responses from one IP within 60 seconds"
+event_type = "http_denied"
+service = "nginx"
+count_threshold = 10
+window_seconds = 60
+score = 60
+
+[[rule]]
+id = "web_404_scan"
+description = "20 or more 404 responses from one IP within 60 seconds (path scanning)"
+event_type = "http_notfound"
+service = "nginx"
+count_threshold = 20
+window_seconds = 60
+score = 55
+
+[[rule]]
+id = "web_sqli_pattern"
+description = "Request path contains a common SQL injection pattern"
+event_type = "http_request"
+service = "nginx"
+match_field = "path"
+match_regex = "(?i)(union\\s+select|or\\s+1=1|--|;\\s*drop\\s+table)"
+score = 80

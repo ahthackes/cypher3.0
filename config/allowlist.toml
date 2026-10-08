@@ -1,0 +1,9 @@
+# IPs and CIDRs that Cypher will NEVER block, no matter the anomaly score.
+# Always include: your own management IP, the default gateway, and your DNS resolvers.
+[allowlist]
+cidrs = [
+    "127.0.0.1/32",
+    "::1/128",
+    "192.168.0.0/16",   # adjust to your lab's private range before running in "active" mode
+    "10.0.0.0/8",
+]

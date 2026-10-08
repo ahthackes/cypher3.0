@@ -1,0 +1,10 @@
+# Not needed for Cypher's own logs if journald is used (the default with
+# systemd units above). Included for completeness if you redirect any
+# component to a flat file instead.
+/opt/cypher/data/*.log {
+    weekly
+    rotate 8
+    compress
+    missingok
+    notifempty
+}

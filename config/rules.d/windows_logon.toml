@@ -1,0 +1,50 @@
+# Windows equivalents of the SSH / sudo rules. These key off the
+# `service` values WindowsSecurityParser assigns: "rdp" (LogonType 10),
+# "windows_logon" (everything else), "windows_privilege".
+# On a Linux deployment no event ever has these services, so these
+# rules simply never fire — leaving them in place is harmless.
+
+[[rule]]
+id = "rdp_bruteforce_5m"
+description = "5 or more failed RDP logons from one IP within 5 minutes"
+event_type = "auth_failure"
+service = "rdp"
+count_threshold = 5
+window_seconds = 300
+score = 70
+
+[[rule]]
+id = "rdp_bruteforce_burst"
+description = "10 or more failed RDP logons from one IP within 60 seconds"
+event_type = "auth_failure"
+service = "rdp"
+count_threshold = 10
+window_seconds = 60
+score = 95
+
+[[rule]]
+id = "windows_network_logon_spray"
+description = "10 or more failed network logons from one IP within 5 minutes (password spraying / SMB brute force)"
+event_type = "auth_failure"
+service = "windows_logon"
+count_threshold = 10
+window_seconds = 300
+score = 75
+
+[[rule]]
+id = "windows_account_lockout"
+description = "An account was locked out after repeated failed logons"
+event_type = "auth_failure"
+service = "windows_logon"
+match_field = "message"
+match_contains = "was locked out"
+score = 60
+
+[[rule]]
+id = "windows_admin_group_add"
+description = "A member was added to the local Administrators group"
+event_type = "priv_escalation_success"
+service = "windows_privilege"
+match_field = "message"
+match_contains = "Administrators group"
+score = 85

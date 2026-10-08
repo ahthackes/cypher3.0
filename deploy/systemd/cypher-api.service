@@ -1,0 +1,20 @@
+[Unit]
+Description=Cypher 2.0 - dashboard API (unprivileged)
+After=network.target cypher-responder.service
+
+[Service]
+Type=simple
+WorkingDirectory=/opt/cypher
+Environment=CYPHER_ADMIN_PASSWORD_HASH=change-me-see-docs
+Environment=CYPHER_SESSION_SECRET=change-me-see-docs
+ExecStart=/opt/cypher/.venv/bin/uvicorn cypher.api.app:create_app --factory --host 127.0.0.1 --port 8000
+Restart=on-failure
+RestartSec=5
+User=cypher
+Group=cypher
+NoNewPrivileges=true
+ProtectSystem=strict
+ReadWritePaths=/opt/cypher/data
+
+[Install]
+WantedBy=multi-user.target

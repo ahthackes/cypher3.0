@@ -1,0 +1,20 @@
+[Unit]
+Description=Cypher 2.0 - log ingestion and detection
+After=network.target
+
+[Service]
+Type=simple
+# EDIT these paths for your install location before enabling.
+WorkingDirectory=/opt/cypher
+ExecStart=/opt/cypher/.venv/bin/cypher start --config /opt/cypher/config/cypher.toml
+Restart=on-failure
+RestartSec=5
+User=cypher
+Group=cypher
+NoNewPrivileges=true
+ProtectSystem=strict
+ReadWritePaths=/opt/cypher/data
+ReadOnlyPaths=/var/log
+
+[Install]
+WantedBy=multi-user.target

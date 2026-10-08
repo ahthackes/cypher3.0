@@ -1,0 +1,53 @@
+[general]
+mode = "dry_run"          # "dry_run" or "active" — active defense only fires blocks in "active"
+data_dir = "./data"
+timezone = "local"
+
+[sources]
+auth_log = "/var/log/auth.log"
+syslog = "/var/log/syslog"
+web_access_log = "/var/log/nginx/access.log"
+windows_security_log = ""   # Windows only — see config/cypher.windows.toml
+
+[storage]
+sqlite_path = "./data/cypher.db"
+parquet_dir = "./data/processed"
+
+[detect]
+rules_dir = "./config/rules.d"
+window_seconds = 60          # sliding window for per-IP frequency features
+score_weight_rules = 0.5
+score_weight_ml = 0.5
+
+[detect.thresholds]
+low = 30
+medium = 60
+high = 80
+critical = 95
+
+[ml]
+model_dir = "./data/models"
+isolation_forest_contamination = 0.02
+autoencoder_enabled = false   # off until Phase 3 training is done and validated
+retrain_interval_hours = 24
+
+[respond]
+enabled = true
+backend = "nftables"          # "nftables" | "iptables" | "ufw" | "windows_firewall"
+block_ttl_seconds = 3600
+max_blocks_per_hour = 20
+allowlist_file = "./config/allowlist.toml"
+ipc_host = "127.0.0.1"
+ipc_port = 8765
+ipc_token_file = "./data/responder.token"
+
+[api]
+host = "127.0.0.1"
+port = 8000
+session_secret_env = "CYPHER_SESSION_SECRET"
+
+[geo]
+geolite_db = "./data/geo/GeoLite2-City.mmdb"
+
+[mitre]
+attack_json = "./data/mitre/enterprise-attack.json"

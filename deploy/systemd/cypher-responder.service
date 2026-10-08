@@ -1,0 +1,17 @@
+[Unit]
+Description=Cypher 2.0 - root-privileged active defense responder
+After=network.target
+
+[Service]
+Type=simple
+WorkingDirectory=/opt/cypher
+ExecStart=/opt/cypher/.venv/bin/python -m cypher.respond.run_responder --config /opt/cypher/config/cypher.toml
+Restart=on-failure
+RestartSec=5
+# Runs as root deliberately — this is the ONLY process allowed to touch
+# the firewall. Keep its code surface minimal (see src/cypher/respond/).
+User=root
+AmbientCapabilities=CAP_NET_ADMIN
+
+[Install]
+WantedBy=multi-user.target

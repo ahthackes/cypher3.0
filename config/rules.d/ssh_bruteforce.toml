@@ -1,0 +1,26 @@
+[[rule]]
+id = "ssh_bruteforce_5m"
+description = "5 or more failed SSH logins from one IP within 5 minutes"
+event_type = "auth_failure"
+service = "sshd"
+count_threshold = 5
+window_seconds = 300
+score = 70
+
+[[rule]]
+id = "ssh_bruteforce_burst"
+description = "10 or more failed SSH logins from one IP within 60 seconds"
+event_type = "auth_failure"
+service = "sshd"
+count_threshold = 10
+window_seconds = 60
+score = 95
+
+[[rule]]
+id = "ssh_invalid_user"
+description = "Login attempt against a nonexistent user account"
+event_type = "auth_failure"
+service = "sshd"
+match_field = "message"
+match_contains = "invalid user"
+score = 40
