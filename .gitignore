@@ -1,0 +1,16 @@
+# Python environments and build artifacts
+.venv/
+venv/
+*.egg-info/
+
+# Python caches
+__pycache__/
+*.py[cod]
+
+# Test and tool caches
+.pytest_cache/
+.ruff_cache/
+.coverage
+
+# OS/editor noise
+.DS_Store
